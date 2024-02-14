@@ -68,11 +68,24 @@ app.post("/api/films" , [
     check("titreVignette").escape().trim().notEmpty().withMessage("Thumbnail title cannot be empty"),
     check("description").escape().trim().notEmpty().withMessage("Description cannot be empty"),
     check("realisation").escape().trim().notEmpty().withMessage("Director field cannot be empty"),
-    check("annee").escape().trim().notEmpty().withMessage("Year cannot be empty").isInt({min: 1800, max: 2024}).withMessage("Please provide a valid year"),
-    check("genres").escape().trim().notEmpty().withMessage("Genre cannot be empty").isArray().withMessage("Genre must be an array"),
+    check("annee").escape().trim().notEmpty().withMessage("Year cannot be empty").bail().isInt({min: 1800, max: 2024}).withMessage("Please provide a valid year"),
+    check("genres").escape().trim().notEmpty().withMessage("Genre cannot be empty").bail().isArray().withMessage("Genre must be an array"),
+    check("commentaires").escape().trim().optional().isArray().withMessage("commentre must be in array").custom((commentaire) =>{
+
+        console.log(commentaire)
+        try {
+            JSON.stringify(commentaire);
+            console.log("Votre variable est un objet JSON.");
+          } catch (error) {
+            console.log("Votre variable n'est pas un objet JSON.");
+          }
+
+          return false
+          
+    }),
 ],async (req, res) => {
     try {
-        const resultAddFilm = validationResult(req);
+        const resultAddFilm = validationResult(req); 
         const resultErrors = []
         
 
@@ -102,6 +115,7 @@ app.put("/api/films/:id", [
     check("realisation").escape().trim().optional(), 
     check("annee").escape().trim().optional().isInt({min: 1800, max: 2024}).withMessage("Please provide a valid year"),
     check("genres").escape().trim().optional().isArray().withMessage("Genre must be an array"),
+    // check("commentaires").escape().trim().optional().isArray().withMessage("Genre must be an array"),
 ], async (req, res) => {
 
     try {

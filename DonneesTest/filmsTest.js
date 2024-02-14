@@ -29,13 +29,13 @@ const donneesTest = [
         titreVignette: "origine.jpg",
     },
     {
-        titre: "Memento",
-        genres: ["Mystère", "Thriller"],
-        description:
+        "titre": "Memento",
+        "genres": ["Mystère", "Thriller"],
+        "description":
             "Un homme souffrant de perte de la mémoire à court terme tente de retrouver l'assassin de sa femme.",
-        realisation: "    Christopher Nolan",
-        annee: "2000",
-        titreVignette: "memento.jpg",
+        "realisation": "    Christopher Nolan",
+        "annee": "2000",
+        "titreVignette": "memento.jpg",
     },
     {
         titre: "Parasite",
