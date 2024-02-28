@@ -18,15 +18,6 @@ const donneesTest = [
     realisation: "Ridley Scott",
     titreVignette: "alienle8emepassager.jpg",
   },
-  // {
-  //     "titre": "Memento",
-  //     "genres": ["Mystère", "Thriller"],
-  //     "description":
-  //         "Un homme souffrant de perte de la mémoire à court terme tente de retrouver l'assassin de sa femme.",
-  //     "realisation": "    Christopher Nolan",
-  //     "annee": "2000",
-  //     "titreVignette": "memento.jpg",
-  // },
   {
     titre: "Origine",
     genres: ["Action", "Aventure", "Science-fiction"],
