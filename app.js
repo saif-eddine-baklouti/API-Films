@@ -54,12 +54,122 @@ app.get("/api/films/:id", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post("/api/films/init", async (req, res) => {
   filmsTest.forEach(async (film) => {
     await db.collection("films").add(film);
   });
 
   res.status(200);
+=======
+app.post("/api/films" , [
+    check("titre").escape().trim().notEmpty().withMessage("Title cannot be empty"),
+    check("titreVignette").escape().trim().notEmpty().withMessage("Thumbnail title cannot be empty"),
+    check("description").escape().trim().notEmpty().withMessage("Description cannot be empty"),
+    check("realisation").escape().trim().notEmpty().withMessage("Director field cannot be empty"),
+    check("annee").escape().trim().notEmpty().withMessage("Year cannot be empty").bail().isInt({min: 1800, max: 2024}).withMessage("Please provide a valid year"),
+    check("genres").escape().trim().notEmpty().withMessage("Genre cannot be empty").bail().isArray().withMessage("Genre must be an array"),
+    check("commentaires").escape().trim().optional().isArray().withMessage("commentre must be in array").custom((commentaire) =>{
+
+        console.log(commentaire)
+        try {
+            JSON.stringify(commentaire);
+            console.log("Votre variable est un objet JSON.");
+          } catch (error) {
+            console.log("Votre variable n'est pas un objet JSON.");
+          }
+
+          return false
+          
+    }),
+],async (req, res) => {
+    try {
+        const resultAddFilm = validationResult(req); 
+        const resultErrors = []
+        
+
+        if (resultAddFilm.errors.length === 0 ) {
+
+            const nouveauFilm = req.body;
+            const idFilm = await db.collection("films").add(nouveauFilm);
+            return res.status(200).json({message: `Successful insertion completed. The ID for the inserted film is provided => ${idFilm.id}`})
+
+        }
+        resultAddFilm.errors.forEach((error) => {
+            // erreurs.push(error)
+            resultErrors.push(error.msg)
+        });
+
+        res.status(400).json(resultErrors);
+        
+    } catch (error) {
+        res.status(500).json({ message: "Oops! Give it another shot shortly." });
+    }
+});
+
+app.put("/api/films/:id", [
+    check("titre").escape().trim().optional(),
+    check("titreVignette").escape().trim().optional(),
+    check("description").escape().trim().optional(),
+    check("realisation").escape().trim().optional(), 
+    check("annee").escape().trim().optional().isInt({min: 1800, max: 2024}).withMessage("Please provide a valid year"),
+    check("genres").escape().trim().optional().isArray().withMessage("Genre must be an array"),
+    // check("commentaires").escape().trim().optional().isArray().withMessage("Genre must be an array"),
+], async (req, res) => {
+
+    try {
+        
+        if (!req.body.genres || req.body.genres.length === 0) {
+            delete req.body.genres
+        } else {
+            req.body.genres.forEach((genre, index)=> {
+
+                if ( genre.trim() === '' || !isNaN(Number(genre)) ) {
+                    req.body.genres.splice(index)
+                }
+            });
+        }
+
+        const resultEditFilm = validationResult(req);
+
+        const resultErrors = [];
+
+        if (!resultEditFilm.isEmpty()) {
+
+            resultEditFilm.errors.forEach((error) => {
+                console.log(error)
+                // erreurs.push(error)
+                resultErrors.push(error.msg)
+                return res.status(400).json({message: `${resultErrors}`})
+            });
+            // resultErrors.push(error.msg)
+        }
+
+
+        const id = req.params.id;
+        const donneesModifiees = req.body;
+        // Validation ici
+
+        // console.log(id);
+        // console.log(donneesModifiees);
+
+        await db.collection("films").doc(id).update(donneesModifiees);
+
+        res.status(200).json({ message: "The data has been altered." });
+
+    } catch (error) {
+
+    }
+});
+
+app.delete("/api/films/:id", async (req, res) => {
+    const id = req.params.id;
+
+    const resultat = await db.collection("films").doc(id).delete();
+
+    res.statusCode = 200;
+    res.json({ message: "The document has been deleted" });
+>>>>>>> 40166849ddd6ba1b455b23ea24bf1648311787cc
 });
 
 app.post(
